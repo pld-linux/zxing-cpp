@@ -1,7 +1,21 @@
 --- zxing-cpp-6b3cbe02a332bff0f5ba0416f221d3d3876afdc2/CMakeLists.txt.orig	2016-11-22 04:34:19.000000000 +0100
-+++ zxing-cpp-6b3cbe02a332bff0f5ba0416f221d3d3876afdc2/CMakeLists.txt	2017-04-16 21:29:53.022165125 +0200
-@@ -65,7 +65,7 @@
++++ zxing-cpp-6b3cbe02a332bff0f5ba0416f221d3d3876afdc2/CMakeLists.txt	2017-04-17 09:00:41.098731903 +0200
+@@ -51,21 +51,9 @@
+     include_directories(SYSTEM "./core/lib/win32/")
+ endif()
  
+-# OpenCV classes
+-find_package(OpenCV)
+-if(OpenCV_FOUND)
+-    file(GLOB_RECURSE LIBZXING_OPENCV_FILES
+-        "./opencv/src/*.cpp"
+-        "./opencv/src/*.h"
+-    )
+-    set(LIBZXING_FILES ${LIBZXING_FILES} ${LIBZXING_OPENCV_FILES})
+-    include_directories(${OpenCV_INCLUDE_DIRS})
+-    include_directories("./opencv/src/")
+-endif()
+-
  include_directories("./core/src/")
  add_library(libzxing ${LIBZXING_FILES})
 -set_target_properties(libzxing PROPERTIES PREFIX "")
@@ -9,7 +23,42 @@
  
  find_package(Iconv)
  if(ICONV_FOUND)
-@@ -94,9 +94,9 @@
+@@ -75,14 +63,32 @@
+     add_definitions(-DNO_ICONV=1)
+ endif()
+ 
+-# Add OpenCV cli executable
++# OpenCV classes
++find_package(OpenCV)
+ if(OpenCV_FOUND)
++    file(GLOB_RECURSE LIBZXING_OPENCV_FILES
++        "./opencv/src/*.cpp"
++        "./opencv/src/*.h"
++    )
++    include_directories(${OpenCV_INCLUDE_DIRS})
++    include_directories("./opencv/src/")
++    add_library(libzxing-cv ${LIBZXING_OPENCV_FILES})
++    set_target_properties(libzxing-cv PROPERTIES PREFIX "" SOVERSION 0)
++    set(LIBZXING_FILES ${LIBZXING_FILES} ${LIBZXING_OPENCV_FILES})
++    target_link_libraries(libzxing-cv libzxing ${OpenCV_LIBRARIES})
++
++    # Add OpenCV cli executable
+     file(GLOB_RECURSE OPENCV_ZXING_FILES
+         "./opencv-cli/src/*.cpp"
+         "./opencv-cli/src/*.h"
+     )
+     add_executable(zxing-cv ${OPENCV_ZXING_FILES})
+-    target_link_libraries(zxing-cv libzxing ${OpenCV_LIBRARIES})
++    target_link_libraries(zxing-cv libzxing-cv libzxing ${OpenCV_LIBRARIES})
++
++    install(TARGETS libzxing-cv zxing-cv
++	LIBRARY DESTINATION lib${LIB_SUFFIX}
++	RUNTIME DESTINATION bin
++	ARCHIVE DESTINATION lib${LIB_SUFFIX})
+ endif()
+ 
+ # Add cli executable.
+@@ -94,9 +100,9 @@
  add_executable(zxing ${ZXING_FILES})
  target_link_libraries(zxing libzxing)
  install(TARGETS zxing libzxing
