@@ -1,7 +1,8 @@
 #
 # Conditional build:
 %bcond_without	opencv		# OpenCV interface
-#
+
+%define	rel	2
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp
@@ -9,7 +10,7 @@ Name:		zxing-cpp
 Version:	2.3.0
 %define	gitref	6b3cbe02a332bff0f5ba0416f221d3d3876afdc2
 %define	snap	20161123
-Release:	0.%{snap}.1
+Release:	0.%{snap}.%{rel}
 License:	Apache v2.0
 Group:		Libraries
 Source0:	https://github.com/glassechidna/zxing-cpp/archive/%{gitref}/%{name}-%{snap}.tar.gz
