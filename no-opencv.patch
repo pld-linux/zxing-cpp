@@ -1,0 +1,37 @@
+--- zxing-cpp-6b3cbe02a332bff0f5ba0416f221d3d3876afdc2/CMakeLists.txt~	2021-03-07 22:14:58.000000000 +0100
++++ zxing-cpp-6b3cbe02a332bff0f5ba0416f221d3d3876afdc2/CMakeLists.txt	2021-03-07 22:17:43.754471042 +0100
+@@ -63,34 +63,6 @@
+     add_definitions(-DNO_ICONV=1)
+ endif()
+ 
+-# OpenCV classes
+-find_package(OpenCV)
+-if(OpenCV_FOUND)
+-    file(GLOB_RECURSE LIBZXING_OPENCV_FILES
+-        "./opencv/src/*.cpp"
+-        "./opencv/src/*.h"
+-    )
+-    include_directories(${OpenCV_INCLUDE_DIRS})
+-    include_directories("./opencv/src/")
+-    add_library(libzxing-cv ${LIBZXING_OPENCV_FILES})
+-    set_target_properties(libzxing-cv PROPERTIES PREFIX "" SOVERSION 0)
+-    set(LIBZXING_FILES ${LIBZXING_FILES} ${LIBZXING_OPENCV_FILES})
+-    target_link_libraries(libzxing-cv libzxing ${OpenCV_LIBRARIES})
+-
+-    # Add OpenCV cli executable
+-    file(GLOB_RECURSE OPENCV_ZXING_FILES
+-        "./opencv-cli/src/*.cpp"
+-        "./opencv-cli/src/*.h"
+-    )
+-    add_executable(zxing-cv ${OPENCV_ZXING_FILES})
+-    target_link_libraries(zxing-cv libzxing-cv libzxing ${OpenCV_LIBRARIES})
+-
+-    install(TARGETS libzxing-cv zxing-cv
+-	LIBRARY DESTINATION lib${LIB_SUFFIX}
+-	RUNTIME DESTINATION bin
+-	ARCHIVE DESTINATION lib${LIB_SUFFIX})
+-endif()
+-
+ # Add cli executable.
+ file(GLOB_RECURSE ZXING_FILES
+     "./cli/src/*.cpp"

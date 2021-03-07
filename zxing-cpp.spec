@@ -1,8 +1,8 @@
 #
 # Conditional build:
-%bcond_without	opencv		# OpenCV interface
+%bcond_with	opencv		# OpenCV interface
 
-%define	rel	2
+%define	rel	3
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp
@@ -16,6 +16,7 @@ Group:		Libraries
 Source0:	https://github.com/glassechidna/zxing-cpp/archive/%{gitref}/%{name}-%{snap}.tar.gz
 # Source0-md5:	14a1766c04ac825fc588c03b2fb04be1
 Patch0:		%{name}-cmake.patch
+Patch1:		no-opencv.patch
 URL:		https://github.com/glassechidna/zxing-cpp
 BuildRequires:	cmake >= 2.8.0
 BuildRequires:	libstdc++-devel
@@ -56,12 +57,15 @@ Program do rozpoznawania kodów QR oparty na bibliotekach OpenCV/ZXing.
 %prep
 %setup -q -n %{name}-%{gitref}
 %patch0 -p1
+%if %{without opencv}
+%patch1 -p1
+%endif
 
 %build
 install -d build
 cd build
 %cmake .. \
-	%{!?with_opencv:-DOpenCV_FOUND=OFF}
+	%{!?with_opencv:-DOpenCV_FOUND:BOOL=OFF}
 
 %{__make}
 
