@@ -1,29 +1,29 @@
---- zxing-cpp-6b3cbe02a332bff0f5ba0416f221d3d3876afdc2/CMakeLists.txt.orig	2016-11-22 04:34:19.000000000 +0100
-+++ zxing-cpp-6b3cbe02a332bff0f5ba0416f221d3d3876afdc2/CMakeLists.txt	2017-04-17 09:00:41.098731903 +0200
-@@ -51,21 +51,9 @@
-     include_directories(SYSTEM "./core/lib/win32/")
+--- zxing-cpp-e0e40ddec63f38405aca5c8c1ff60b85ec8b1f10/CMakeLists.txt.orig	2019-03-20 14:52:05.000000000 +0100
++++ zxing-cpp-e0e40ddec63f38405aca5c8c1ff60b85ec8b1f10/CMakeLists.txt	2021-06-19 09:59:00.886700396 +0200
+@@ -44,21 +44,9 @@
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
  endif()
  
 -# OpenCV classes
 -find_package(OpenCV)
 -if(OpenCV_FOUND)
--    file(GLOB_RECURSE LIBZXING_OPENCV_FILES
--        "./opencv/src/*.cpp"
--        "./opencv/src/*.h"
+-    list(APPEND LIBZXING_FILES
+-        opencv/src/zxing/MatSource.cpp
+-        opencv/src/zxing/MatSource.h
 -    )
--    set(LIBZXING_FILES ${LIBZXING_FILES} ${LIBZXING_OPENCV_FILES})
+-
 -    include_directories(${OpenCV_INCLUDE_DIRS})
--    include_directories("./opencv/src/")
+-    include_directories(opencv/src)
 -endif()
 -
- include_directories("./core/src/")
+ include_directories(core/src)
  add_library(libzxing ${LIBZXING_FILES})
 -set_target_properties(libzxing PROPERTIES PREFIX "")
 +set_target_properties(libzxing PROPERTIES PREFIX "" SOVERSION 0)
  
  find_package(Iconv)
  if(ICONV_FOUND)
-@@ -75,14 +63,32 @@
+@@ -68,14 +56,32 @@
      add_definitions(-DNO_ICONV=1)
  endif()
  
@@ -58,15 +58,15 @@
  endif()
  
  # Add cli executable.
-@@ -94,9 +100,9 @@
- add_executable(zxing ${ZXING_FILES})
+@@ -88,9 +94,9 @@
  target_link_libraries(zxing libzxing)
- install(TARGETS zxing libzxing
+ 
+ install(TARGETS zxing libzxing EXPORT zxing-targets
 -	LIBRARY DESTINATION lib
 +	LIBRARY DESTINATION lib${LIB_SUFFIX}
  	RUNTIME DESTINATION bin
--	ARCHIVE DESTINATION lib)
-+	ARCHIVE DESTINATION lib${LIB_SUFFIX})
- install(DIRECTORY core/src/zxing/ DESTINATION include/zxing FILES_MATCHING PATTERN "*.h")
+-	ARCHIVE DESTINATION lib
++	ARCHIVE DESTINATION lib${LIB_SUFFIX}
+     INCLUDES DESTINATION include
+ )
  
- # Add testrunner executable.

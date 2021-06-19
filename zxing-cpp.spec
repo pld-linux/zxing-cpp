@@ -2,25 +2,25 @@
 # Conditional build:
 %bcond_with	opencv		# OpenCV interface
 
-%define	rel	4
+%define	rel	1
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp
 # no version information in sources; cpp port has been removed from zxing repository between 2.3.0 and 3.0.0 releases
 Version:	2.3.0
-%define	gitref	6b3cbe02a332bff0f5ba0416f221d3d3876afdc2
-%define	snap	20161123
+%define	gitref	e0e40ddec63f38405aca5c8c1ff60b85ec8b1f10
+%define	snap	20190321
 Release:	0.%{snap}.%{rel}
 License:	Apache v2.0
 Group:		Libraries
 Source0:	https://github.com/glassechidna/zxing-cpp/archive/%{gitref}/%{name}-%{snap}.tar.gz
-# Source0-md5:	14a1766c04ac825fc588c03b2fb04be1
+# Source0-md5:	41d2af7fc424e1c6129192bd87d54c5f
 Patch0:		%{name}-cmake.patch
 Patch1:		no-opencv.patch
 URL:		https://github.com/glassechidna/zxing-cpp
 BuildRequires:	cmake >= 2.8.0
-BuildRequires:	libstdc++-devel
-%{?with_opencv:BuildRequires:	opencv-devel}
+BuildRequires:	libstdc++-devel >= 6:4.7
+%{?with_opencv:BuildRequires:	opencv-devel >= 2}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -34,7 +34,7 @@ Summary:	Header files for ZXing library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ZXing
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libstdc++-devel
+Requires:	libstdc++-devel >= 6:4.7
 
 %description devel
 Header files for ZXing library.
@@ -57,15 +57,13 @@ Program do rozpoznawania kodów QR oparty na bibliotekach OpenCV/ZXing.
 %prep
 %setup -q -n %{name}-%{gitref}
 %patch0 -p1
-%if %{without opencv}
 %patch1 -p1
-%endif
 
 %build
 install -d build
 cd build
 %cmake .. \
-	%{!?with_opencv:-DOpenCV_FOUND:BOOL=OFF}
+	%{!?with_opencv:-DUSE_OPENCV=OFF}
 
 %{__make}
 
@@ -99,10 +97,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libzxing.so
 %{_includedir}/zxing
+%dir %{_libdir}/zxing
+%{_libdir}/zxing/cmake
 
 %if %{with opencv}
 %files opencv
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libzxing-cv.so.0
 %attr(755,root,root) %{_bindir}/zxing-cv
+%attr(755,root,root) %{_libdir}/libzxing-cv.so.0
 %endif
