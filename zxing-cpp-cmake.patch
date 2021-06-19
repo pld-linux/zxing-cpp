@@ -1,5 +1,5 @@
 --- zxing-cpp-e0e40ddec63f38405aca5c8c1ff60b85ec8b1f10/CMakeLists.txt.orig	2019-03-20 14:52:05.000000000 +0100
-+++ zxing-cpp-e0e40ddec63f38405aca5c8c1ff60b85ec8b1f10/CMakeLists.txt	2021-06-19 09:59:00.886700396 +0200
++++ zxing-cpp-e0e40ddec63f38405aca5c8c1ff60b85ec8b1f10/CMakeLists.txt	2021-06-19 11:01:17.905319270 +0200
 @@ -44,21 +44,9 @@
      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
  endif()
@@ -58,7 +58,7 @@
  endif()
  
  # Add cli executable.
-@@ -88,9 +94,9 @@
+@@ -88,13 +94,13 @@
  target_link_libraries(zxing libzxing)
  
  install(TARGETS zxing libzxing EXPORT zxing-targets
@@ -70,3 +70,17 @@
      INCLUDES DESTINATION include
  )
  
+-install(EXPORT zxing-targets DESTINATION lib/zxing/cmake NAMESPACE zxing::)
++install(EXPORT zxing-targets DESTINATION lib${LIB_SUFFIX}/zxing/cmake NAMESPACE zxing::)
+ 
+ install(
+     DIRECTORY core/src/zxing/
+@@ -114,7 +120,7 @@
+ endif()
+ 
+ configure_file(cmake/zxing-config.cmake.in zxing-config.cmake @ONLY)
+-install(FILES ${CMAKE_BINARY_DIR}/zxing-config.cmake DESTINATION lib/zxing/cmake)
++install(FILES ${CMAKE_BINARY_DIR}/zxing-config.cmake DESTINATION lib${LIB_SUFFIX}/zxing/cmake)
+ 
+ if(BUILD_TESTING)
+     # Add testrunner executable.
