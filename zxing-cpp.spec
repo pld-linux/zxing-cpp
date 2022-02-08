@@ -1,3 +1,4 @@
+# NOTE: more recent fork from nu-book exists in zxing-cpp-nu.spec (both are parallel installable)
 #
 # Conditional build:
 %bcond_without	opencv		# OpenCV interface
