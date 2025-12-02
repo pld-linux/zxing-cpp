@@ -3,7 +3,7 @@
 # Conditional build:
 %bcond_without	opencv		# OpenCV interface
 
-%define	rel	4
+%define	rel	5
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp
